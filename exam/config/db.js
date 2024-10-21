@@ -1,17 +1,15 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
-const connectDB = async() =>{
+const connectDB = async () => {
+  try {
+    await mongoose.connect(
+      "mongodb+srv://pdvaghani:pdvaghani@cluster0.quhpv.mongodb.net/nodejs-practicals"
+    );
+    console.log("MongoDB connected..");
+  } catch (err) {
+    console.error(err.message);
+    return false;
+  }
+};
 
-    try {
-        
-        const conn = await mongoose.connect(
-           `mongodb://127.0.0.1:27017/node_js_exam`
-        )
-        console.log(`MongoDB Connected: ${conn.connection.host}`)
-    } catch (error) {
-        console.log(error);
-        return false;
-        
-    }
-}
 module.exports = connectDB;

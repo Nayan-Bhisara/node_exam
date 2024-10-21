@@ -1,16 +1,25 @@
-const express = require('express');
-const { viewstate, addstate,insertstate,deltestate, statusChange, editstate,updatestate } = require('../controllers/statecontroller');
-
+const express = require("express");
+const {
+  subCatPage,
+  addSubCatPage,
+  addSubCat,
+  deleteSubcat,
+  editSubCat,
+  SubCatUpdate,
+  statePage,
+  addstatePage,
+  addstate,
+  deletestate,
+  editstate,
+  stateUpdate,
+} = require("../controller/stateController");
 const routes = express.Router();
 
-routes.get('/',viewstate)
-routes.get('/add',addstate)
-routes.post('/insertstate',insertstate)
-routes.get('/deltestate',deltestate)
-routes.get('/statusChange',statusChange)
-routes.get('/editstate',editstate)
-routes.post('/updatestate',updatestate)
-
-
+routes.get("/", statePage);
+routes.get("/add", addstatePage);
+routes.post("/add", addstate);
+routes.get("/delete", deletestate);
+routes.get("/edit", editstate);
+routes.post("/update", stateUpdate);
 
 module.exports = routes;

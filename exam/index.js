@@ -1,49 +1,65 @@
-const express = require('express');
-
+const express = require("express");
+const app = express();
 const port = 8000;
 
-const app = express();
+const cookieParser = require("cookie-parser");
 
-const path = require('path');
-const connectDB = require('./config/db');
-const cookieParser = require('cookie-parser')
+// flash connect
+const flash = require("connect-flash");
 
-connectDB()
-app.use(cookieParser())
+// path
+const path = require("path");
 
-app.set('view engine', 'ejs');
+// view engine
+app.set("view engine", "ejs");
 
-app.use('/', express.static(path.join(__dirname, 'public')));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+// database attachment
+const connectDB = require("./config/db");
+connectDB();
 
-const passport = require('passport')
-const session = require('express-session')
-const passportLocal = require('./config/passport-local')
+// admin panel css attachment
+app.use("/", express.static(path.join(__dirname, "public")));
 
-app.use(session({
-    secret: 'secret',
+// passort js attachment
+const passport = require("passport");
+const passportLocal = require("./config/passportLocal");
+const session = require("express-session");
+
+app.use(
+  session({
+    secret: "secret",
     resave: false,
     saveUninitialized: true,
-    cookie: {  
-        maxAge: 1000 * 60 * 60 * 24 * 7
-    }
-    
-}))
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24,
+    },
+  })
+);
 
-app.use(passport.initialize())
-app.use(passport.session())
-app.use(passport.setUser)
+app.use(flash());
 
-app.use(express.urlencoded());
+app.use((req, res, next) => {
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+});
 
-app.use('/', require('./routes/indexRoute'));
+app.use(cookieParser());
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(passport.setUser);
+
+// routes
+app.use("/", require("./routes/indexRoute"));
 
 app.listen(port, (err) => {
-    if (err) {
-        console.log(err);
-        return false
-    }
-    console.log(`server is start on port :- ${port}`);
-
-})
+  if (err) {
+    console.log(`error`);
+    return false;
+  }
+  console.log(`server run on `, port);
+});
